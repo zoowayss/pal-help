@@ -1,0 +1,13 @@
+package top.help.pal;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class PalHelpApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(PalHelpApplication.class, args);
+	}
+
+}
