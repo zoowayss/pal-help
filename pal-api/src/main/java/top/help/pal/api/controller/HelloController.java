@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.help.pal.api.service.UserService;
+import top.help.pal.api.token.Auth;
 import top.help.pal.common.domain.resp.Result;
 import top.help.pal.common.domain.vo.HelloVo;
 import top.help.pal.common.entity.UserEntity;
+import top.help.pal.common.token.TokenUser;
 import top.help.pal.common.utils.TimeUtils;
 
 @RestController
@@ -38,6 +40,18 @@ public class HelloController {
         UserEntity save = UserEntity.builder().deviceId(TimeUtils.getCurrentTimeMils() + "").username("test").build();
         userService.save(save);
         return Result.success(save);
+    }
+
+
+    /**
+     * curl -X GET http://localhost:8888/v1/auth -H 'Authorization: xxx' -H 'did: 123432'
+     *
+     * @return
+     */
+    @GetMapping({"/auth"})
+    @Auth
+    public Result<HelloVo> auth(TokenUser user) {
+        return Result.success(HelloVo.builder().hello(user.getDid()).build());
     }
 
 }
