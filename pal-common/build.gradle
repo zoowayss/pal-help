@@ -1,0 +1,43 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'top.help.pal.common'
+version = '1.0.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
+    // 引入 spring web 依赖 使用 undertow
+    api('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    api 'org.springframework.boot:spring-boot-starter-undertow'
+
+    // 引入mybatis plus 依赖
+    api 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.5'
+
+    // 引入 mysql connect java 依赖
+    api 'com.mysql:mysql-connector-j'
+
+}
+
+test {
+    useJUnitPlatform()
+}
