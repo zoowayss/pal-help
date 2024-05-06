@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.help.pal.api.service.UserService;
 import top.help.pal.api.token.Auth;
+import top.help.pal.common.domain.enums.SysRoleEnum;
 import top.help.pal.common.domain.resp.Result;
 import top.help.pal.common.domain.vo.HelloVo;
 import top.help.pal.common.entity.UserEntity;
@@ -49,7 +50,7 @@ public class HelloController {
      * @return
      */
     @GetMapping({"/auth"})
-    @Auth
+//    @Auth(requires = {SysRoleEnum.admin,SysRoleEnum.user})
     public Result<HelloVo> auth(TokenUser user) {
         return Result.success(HelloVo.builder().hello(user.getDid()).build());
     }

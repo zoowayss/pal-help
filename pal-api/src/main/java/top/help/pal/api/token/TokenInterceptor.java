@@ -6,9 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import top.help.pal.common.domain.enums.SysRoleEnum;
 import top.help.pal.common.token.TokenUser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -41,6 +46,19 @@ public class TokenInterceptor implements HandlerInterceptor {
                     return false;
                 }
 
+                List<SysRoleEnum> roles = new ArrayList<>();
+                if (handlerMethod.hasMethodAnnotation(Auth.class)) {
+                    roles.addAll(Arrays.stream(Objects.requireNonNull(handlerMethod.getMethodAnnotation(Auth.class)).requires()).toList());
+                }
+
+                if (handlerMethod.getBeanType().isAnnotationPresent(Auth.class)) {
+                    roles.addAll(Arrays.stream(handlerMethod.getBeanType().getAnnotation(Auth.class).requires()).toList());
+                }
+                if (!roles.contains(user.getRole())) {
+                    writeUnauthorized(response, MISSING_DID);
+                    return false;
+                }
+
                 request.setAttribute(TOKEN_USER_ATTRIBUTE, user);
                 return true;
             }
@@ -49,7 +67,8 @@ public class TokenInterceptor implements HandlerInterceptor {
                 writeUnauthorized(response, MISSING_DID);
                 return false;
             }
-            user = new TokenUser(null, did);
+
+            user = new TokenUser(null, did, SysRoleEnum.user);
             request.setAttribute(TOKEN_USER_ATTRIBUTE, user);
             return true;
         }
